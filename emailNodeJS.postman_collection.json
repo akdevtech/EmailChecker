@@ -1,0 +1,86 @@
+{
+	"info": {
+		"_postman_id": "4a6421ed-8a50-46f3-8407-99a9d68ced07",
+		"name": "emailNodeJS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8081/emails",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6f5e772b-8de3-4489-bef1-9b4e7ff9867a",
+						"exec": [
+							"var emailSet = pm.environment.get(\"emailSet\")",
+							"",
+							"if(!emailSet) {",
+							"    emailSet = ['[\"test.email@gmail.com\", \"test.email+spam@gmail.com\", \"testemail@gmail.com\"]', ",
+							"                '[\"abc1@gmail.com\", \"ab.c1@gmail.com\", \"cba@gmail.com\", \"cba+ab1@gmail.com\"]',",
+							"                '[\"\"]',",
+							"                '\"abc@gmail.com\"',",
+							"                '\"\"',",
+							"                '[\"a.a.a@gmail.com\", \"aaa@gmail.com\", \"a.a.a+a+a+a@gmail.com\"]',",
+							"                '[\"a+.aa@gmail.com\", \"a@gmail.com\", \"b@gmail.com\", \"b.+@gmail.com\"]',",
+							"                '[\"abc@gmail.com\", \"ABC@gmail.com\", \"a.b.c@gmail.com\", \"ab.c+cba@gmail.com\"]']",
+							"}",
+							"",
+							"var currentSet = emailSet.shift()",
+							"pm.environment.set(\"emails\", currentSet)",
+							"pm.environment.set(\"emailSet\", emailSet)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "638b2b9e-7efe-436a-895d-84a58010bf5a",
+						"exec": [
+							"var emailSet = pm.environment.get(\"emailSet\")",
+							"",
+							"if(emailSet && emailSet.length > 0) {",
+							"    postman.setNextRequest(\"localhost:8081/emails\")",
+							"} else {",
+							"    postman.setNextRequest(null)",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"email_addresses\": {{emails}}\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/emails",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"emails"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
